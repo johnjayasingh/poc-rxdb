@@ -238,34 +238,27 @@ function Canvas() {
     }
   }
 
-  const [lastChange, setLastChange] = useState({})
 
   const handleNodeChange = async (changes) => {
     onNodesChange(changes)
     setEnableSave(true);
     // Live Sync
-    // const change = changes[0]
-    // if (change.position && change.dragging) {
-    //   return setLastChange({
-    //     ...lastChange,
-    //     [change.id]: change
-    //   })
-    // }
-    // if (lastChange?.[change.id]) {
-    //   const updated = nodes?.find(data => data?.id === change?.id);
-    //   updated.position = lastChange?.[change.id]?.position;
-    //   const db = await get();
-    //   await db.nodes.incrementalUpsert(updated).catch(console.error);
-    //   setLastChange({
-    //     ...lastChange,
-    //     [change.id]: undefined
-    //   })
-    // }
+    for (const change of changes) {
+      if (change.type === 'position') {
+        if (!change.dragging) {
+          const flow = rfInstance.toObject();
+          const updated = flow?.nodes?.find(data => data?.id === change?.id);
+          console.log('Commit changes', change, updated)
+          const db = await get();
+          await db.nodes.incrementalUpsert(updated).catch(console.error);
+        }
+      }
+    }
   }
 
   return (
     <div style={{ width: '100vw', height: '80vh', marginTop: 20, background: 'black' }}>
-      <button  onClick={onSave} type="submit">Save Changes</button>
+      <button onClick={onSave} type="submit">Save Changes</button>
       <form onSubmit={addNode}>
         <input name="name" type="text" placeholder="Node Label" value={label} onChange={(e) => {
           setLabel(e.target.value)
