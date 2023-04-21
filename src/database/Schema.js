@@ -98,3 +98,26 @@ export const editorSchema = {
         },
     }
 }
+
+export const profileSchema = {
+    title: 'profile schema',
+    description: 'profile',
+    version: 0,
+    primaryKey: 'id',
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            maxLength: 100,
+        },
+        name: {
+            type: 'string',
+        },
+        image: {
+            type: 'string',
+        },
+        email: {
+            type: 'string',
+        },
+    }
+}
