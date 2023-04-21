@@ -1,4 +1,4 @@
-import React, { Component, useCallback, useEffect, useRef, useState } from 'react';
+import React, { Component, createContext, useCallback, useEffect, useRef, useState } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -13,6 +13,8 @@ import Header from '@editorjs/header';
 import 'reactflow/dist/style.css';
 import { get } from './database/Database'
 import { toast } from 'react-toastify';
+import Layout from './components/Layout';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 class HeroList extends Component {
   state = {
@@ -381,12 +383,67 @@ function Editor() {
 
 
 function App() {
+  const [data, setData] = useState([
+    {
+      component: 'layout',
+      name: 'Home layout',
+      properties: [
+        {
+          key: 'enableProfile',
+          value: true
+        }
+      ],
+      data: {
+        subscribe: [
+          { key: 'profile_name', value: 'John Doe' },
+          { key: 'profile_image', value: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png' }
+        ],
+        emit: []
+      },
+      childrens: [
+        {
+          component: 'profile-card',
+          name: 'Profle Card',
+          properties: [],
+          data: {
+            subscribe: [
+              { key: 'profile_name', value: 'John Doe' },
+              { key: 'profile_image', value: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png' }
+            ],
+            emit: []
+          },
+          childrens: []
+        },
+        {
+          component: 'edit-profile',
+          name: 'Edit Profile',
+          properties: [],
+          data: {
+            subscribe: [
+              { key: 'profile_name', value: '' },
+              { key: 'profile_image', value: '' },
+              { key: 'profile_email', value: '' }
+            ],
+            emit: [
+              { key: 'profile_name', value: '' },
+              { key: 'profile_image', value: '' },
+              { key: 'profile_email', value: '' }
+            ]
+          },
+          childrens: []
+        },
+
+      ]
+    }
+  ])
   return (
     <>
-      <HeroList />
-      <HeroInsert />
-      <Canvas />
-      <Editor />
+      {data.map((val) => {
+        if (val.component === 'layout') {
+          return <Layout {...val} />
+        }
+        return <p>Unsupported Component {val.component}</p>
+      })}
     </>
   );
 };
