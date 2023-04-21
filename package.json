@@ -1,0 +1,39 @@
+{
+  "name": "budstudio",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run dev\"",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "server": "pouchdb-server --host 0.0.0.0 -p 10102 -m -d /tmp/pouchdb-server/ -n true"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "concurrently": "^8.0.1",
+    "pouchdb-adapter-http": "^8.0.1",
+    "pouchdb-adapter-idb": "^8.0.1",
+    "pouchdb-server": "^4.2.0",
+    "react-toastify": "^9.1.2",
+    "reactflow": "^11.7.0",
+    "rxdb": "^14.9.0",
+    "rxjs": "^7.8.0",
+    "serve": "^14.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "@vitejs/plugin-react": "^4.0.0-beta.0",
+    "eslint": "^8.38.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.3.4",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.0"
+  }
+}
