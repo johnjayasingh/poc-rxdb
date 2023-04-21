@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 import { get } from "../database/Database";
 
 export default function EditProfile(props) {
-
+  const profileId = 'johndoe'
   const items = [];
 
   for (const sub of props.data.subscribe) {
@@ -18,29 +18,34 @@ export default function EditProfile(props) {
 
   useEffect(() => {
     const listeners = [];
+    const subToData = async () => {
+      for (const sub of props.data.subscribe) {
+        const keys = sub.key?.split('_');
+        const db = await get();
+        db[keys[0]].findByIds([profileId]).$.subscribe(data => {
+          for(const key of Object.keys(data)){
+            console.log('data[key]', data[key])
+            document.getElementById(`${key[0]}_${key}`).setAttribute('value', data[key])
+          }
+        });
+      }
+    }
+    subToData();
     for (const _emit of props.data.emit) {
-      document.getElementById(_emit.key).addEventListener('change', async (event)=>{
+      document.getElementById(_emit.key).addEventListener('change', async (event) => {
         console.log(`capture ${_emit.key} value ${event.target.value}`)
         const db = await get();
         const keys = event.target.id?.split('_');
-        // const data = db[event.target.id?.split('_')[0]].findOne({
-        //   selector: {
-        //     email: {
-        //       $eq: props.data.subscribe?.find(sub=> sub.key?.includes('email')).value
-        //     }
-        //   }
-        // })
-        // console.log(data);
-        // const addData = {
-        //   name,
-        //   color
-        // };
-        await db[keys[0]].insert({
-          id: `${Math.random()* 1000}`,
+        const data = await db[keys[0]].findByIds([profileId]).exec()
+        const existing =  data.get(profileId).toJSON();
+        await db[keys[0]].upsert({
+          ...existing,
+          id: profileId,
           [keys[1]]: event.target.value
         });
         console.log({
-          id: `${Math.random()* 1000}`,
+          ...existing,
+          id: profileId,
           [keys[1]]: event.target.value
         })
         // this.setState({
