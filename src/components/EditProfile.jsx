@@ -8,10 +8,12 @@ export default function EditProfile(props) {
 
   for (const sub of props.data.subscribe) {
     items.push(
-      <Form.Group className="mb-3" controlId="formBasicPassword">
-        <Form.Label>{sub.key}</Form.Label>
-        <Form.Control id={sub.key} type="text" placeholder={sub.key} defaultValue={sub.value} />
-      </Form.Group>
+      <div class="form-group">
+        <fieldset>
+          <label class="form-label" htmlFor={sub.key}>{sub.key}</label>
+          <input class="form-control" id={sub.key} type="text" placeholder={sub.key} defaultValue={sub.value} />
+        </fieldset>
+      </div>
     )
   }
 
@@ -23,9 +25,16 @@ export default function EditProfile(props) {
         const keys = sub.key?.split('_');
         const db = await get();
         db[keys[0]].findByIds([profileId]).$.subscribe(data => {
-          for(const key of Object.keys(data)){
+          data = data.get(profileId).toJSON();
+          for (const key of Object.keys(data)) {
+            const id = `${keys[0]}_${key}`;
+            const component =  document.getElementById(id);
             console.log('data[key]', data[key])
-            document.getElementById(`${key[0]}_${key}`).setAttribute('value', data[key])
+            console.log(`id ${id}`)
+            console.log('document',);
+            if (data[key] && component) {
+              component.value = data[key];
+            }
           }
         });
       }
@@ -37,7 +46,7 @@ export default function EditProfile(props) {
         const db = await get();
         const keys = event.target.id?.split('_');
         const data = await db[keys[0]].findByIds([profileId]).exec()
-        const existing =  data.get(profileId).toJSON();
+        const existing = data.get(profileId).toJSON();
         await db[keys[0]].upsert({
           ...existing,
           id: profileId,
@@ -60,9 +69,9 @@ export default function EditProfile(props) {
   return (
     <div className="my-5 ">
       <h6>{props.name}</h6>
-      <Form>
+      <form>
         {items}
-      </Form>
+      </form>
     </div>
   )
 }
