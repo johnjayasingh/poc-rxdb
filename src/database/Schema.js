@@ -81,3 +81,20 @@ export const edgeSchema = {
         },
     }
 }
+
+export const editorSchema = {
+    title: 'editor schema',
+    description: 'editor',
+    version: 0,
+    primaryKey: 'id',
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            maxLength: 100,
+        },
+        data: {
+            type: 'object',
+        },
+    }
+}

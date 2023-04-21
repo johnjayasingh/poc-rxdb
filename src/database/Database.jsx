@@ -8,7 +8,8 @@ import {
 import {
     heroSchema,
     edgeSchema,
-    nodeSchema
+    nodeSchema,
+    editorSchema
 } from './Schema';
 
 import { replicateCouchDB } from 'rxdb/plugins/replication-couchdb';
@@ -77,6 +78,23 @@ const _create = async () => {
         },
         edges: {
             schema: edgeSchema,
+            methods: {
+                hpPercent() {
+                    return this.hp / this.maxHP * 100;
+                }
+            },
+            migrationStrategies: {
+                0: function(oldDoc) {
+                  return oldDoc
+                },
+                // 1 means, this transforms data from version 0 to version 1
+                1: function(oldDoc) {
+                  return oldDoc
+                },
+            }
+        },
+        editor: {
+            schema: editorSchema,
             methods: {
                 hpPercent() {
                     return this.hp / this.maxHP * 100;

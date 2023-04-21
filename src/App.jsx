@@ -1,4 +1,4 @@
-import React, { Component, useCallback, useEffect, useState } from 'react';
+import React, { Component, useCallback, useEffect, useRef, useState } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -7,7 +7,9 @@ import ReactFlow, {
   useEdgesState,
   addEdge,
 } from 'reactflow';
-
+import EditorJS from '@editorjs/editorjs';
+import Header from '@editorjs/header'; 
+ 
 import 'reactflow/dist/style.css';
 import { get } from './database/Database'
 import { toast } from 'react-toastify';
@@ -257,8 +259,8 @@ function Canvas() {
   }
 
   return (
-    <div style={{ width: '100vw', height: '80vh', marginTop: 20, background: 'black' }}>
-      <button onClick={onSave} type="submit">Save Changes</button>
+    <>
+          <button onClick={onSave} type="submit">Save Changes</button>
       <form onSubmit={addNode}>
         <input name="name" type="text" placeholder="Node Label" value={label} onChange={(e) => {
           setLabel(e.target.value)
@@ -273,6 +275,7 @@ function Canvas() {
         }} />
         <button disabled={!label} type="submit">Insert a Website</button>
       </form>
+    <div style={{ width: '100vw', height: '80vh', background: 'black' }}>
       <ReactFlow
         onInit={setRfInstance}
         nodes={nodes}
@@ -287,7 +290,87 @@ function Canvas() {
         <Background variant="dots" gap={12} size={1} />
       </ReactFlow>
     </div>
+    </>
   );
+}
+
+const EDITTOR_HOLDER_ID = 'editorjs';
+
+
+const DEFAULT_INITIAL_DATA = () => {
+  return {
+    "time": new Date().getTime(),
+    "blocks": [
+      {
+        "type": "header",
+        "data": {
+          "text": "This is my awesome editor!",
+          "level": 1
+        }
+      },
+    ]
+  }
+}
+
+function Editor() {
+
+  const [label, setLabel] = useState('')
+  const ejInstance = useRef();
+  const [editorData, setEditorData] = React.useState(DEFAULT_INITIAL_DATA);
+ 
+  // This will run only once
+  useEffect(() => {
+    if (!ejInstance.current) {
+      initEditor();
+    }
+    return () => {
+      ejInstance.current?.destroy();
+      ejInstance.current = null;
+    }
+  }, []);
+ 
+  const initEditor = () => {
+    const editor = new EditorJS({
+      holder: EDITTOR_HOLDER_ID,
+      logLevel: "ERROR",
+      data: editorData,
+      onReady: () => {
+        ejInstance.current = editor;
+      },
+      onChange: async () => {
+        let content = await this.editorjs.saver.save();
+        // Put your logic here to save this data to your DB
+        setEditorData(content);
+      },
+      autofocus: true,
+      tools: { 
+        header: Header, 
+      }, 
+    });
+  };
+
+  const addEditor = async (event) => {
+    event.preventDefault();
+    const db = await get();
+
+    const addData = { id: label, data };
+    console.log(addData)
+    await db.nodes.insert(addData);
+    if (nodes.length > 0) {
+      const previous = nodes[nodes.length - 1];
+      const addEdgeData = { id: `${previous.data?.label || nodes.length - 1}-${addData.data.label}`, source: previous.id, target: addData.id }
+      await db.edges.insert(addEdgeData);
+    }
+  }
+  return <div style={{ width: '100vw', height: '80vh', marginTop: 20 }}>
+    <form onSubmit={addEditor}>
+      <input name="name" type="text" placeholder="Heading" value={label} onChange={(e) => {
+        setLabel(e.target.value)
+      }} />
+      <button disabled={!label} type="submit">Add Editor</button>
+    </form>
+ <div id={EDITTOR_HOLDER_ID}> </div>
+  </div>
 }
 
 
@@ -297,6 +380,7 @@ function App() {
       <HeroList />
       <HeroInsert />
       <Canvas />
+      <Editor/>
     </>
   );
 };

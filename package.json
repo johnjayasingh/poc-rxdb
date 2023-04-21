@@ -12,12 +12,14 @@
     "server": "pouchdb-server --host 0.0.0.0 -p 10102 -m -d /tmp/pouchdb-server/ -n true"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "@editorjs/editorjs": "^2.26.5",
+    "@editorjs/header": "^2.7.0",
     "concurrently": "^8.0.1",
     "pouchdb-adapter-http": "^8.0.1",
     "pouchdb-adapter-idb": "^8.0.1",
     "pouchdb-server": "^4.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-toastify": "^9.1.2",
     "reactflow": "^11.7.0",
     "rxdb": "^14.9.0",
