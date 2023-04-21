@@ -8,8 +8,8 @@ import ReactFlow, {
   addEdge,
 } from 'reactflow';
 import EditorJS from '@editorjs/editorjs';
-import Header from '@editorjs/header'; 
- 
+import Header from '@editorjs/header';
+
 import 'reactflow/dist/style.css';
 import { get } from './database/Database'
 import { toast } from 'react-toastify';
@@ -260,7 +260,7 @@ function Canvas() {
 
   return (
     <>
-          <button onClick={onSave} type="submit">Save Changes</button>
+      <button onClick={onSave} type="submit">Save Changes</button>
       <form onSubmit={addNode}>
         <input name="name" type="text" placeholder="Node Label" value={label} onChange={(e) => {
           setLabel(e.target.value)
@@ -275,21 +275,21 @@ function Canvas() {
         }} />
         <button disabled={!label} type="submit">Insert a Website</button>
       </form>
-    <div style={{ width: '100vw', height: '80vh', background: 'black' }}>
-      <ReactFlow
-        onInit={setRfInstance}
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={handleNodeChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        nodeTypes={nodeTypes}
-      >
-        <Controls />
-        <MiniMap />
-        <Background variant="dots" gap={12} size={1} />
-      </ReactFlow>
-    </div>
+      <div style={{ width: '100vw', height: '80vh', background: 'black' }}>
+        <ReactFlow
+          onInit={setRfInstance}
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={handleNodeChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          nodeTypes={nodeTypes}
+        >
+          <Controls />
+          <MiniMap />
+          <Background variant="dots" gap={12} size={1} />
+        </ReactFlow>
+      </div>
     </>
   );
 }
@@ -312,12 +312,10 @@ const DEFAULT_INITIAL_DATA = () => {
   }
 }
 
-function Editor() {
-
-  const [label, setLabel] = useState('')
+function EditorComponent() {
   const ejInstance = useRef();
   const [editorData, setEditorData] = React.useState(DEFAULT_INITIAL_DATA);
- 
+
   // This will run only once
   useEffect(() => {
     if (!ejInstance.current) {
@@ -328,7 +326,7 @@ function Editor() {
       ejInstance.current = null;
     }
   }, []);
- 
+
   const initEditor = () => {
     const editor = new EditorJS({
       holder: EDITTOR_HOLDER_ID,
@@ -343,11 +341,19 @@ function Editor() {
         setEditorData(content);
       },
       autofocus: true,
-      tools: { 
-        header: Header, 
-      }, 
+      tools: {
+        header: Header,
+      },
     });
   };
+  return <div id={EDITTOR_HOLDER_ID}> </div>
+
+}
+
+function Editor() {
+
+  const [label, setLabel] = useState('')
+
 
   const addEditor = async (event) => {
     event.preventDefault();
@@ -369,7 +375,7 @@ function Editor() {
       }} />
       <button disabled={!label} type="submit">Add Editor</button>
     </form>
- <div id={EDITTOR_HOLDER_ID}> </div>
+    <EditorComponent />
   </div>
 }
 
@@ -380,7 +386,7 @@ function App() {
       <HeroList />
       <HeroInsert />
       <Canvas />
-      <Editor/>
+      <Editor />
     </>
   );
 };
