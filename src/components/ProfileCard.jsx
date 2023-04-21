@@ -19,6 +19,7 @@ export default function ProfileCard(props) {
 
   return (
     <div className="my-5 ">
+      <h6>{props.name}</h6>
       {items}
     </div>
   )

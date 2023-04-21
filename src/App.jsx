@@ -420,9 +420,9 @@ function App() {
           properties: [],
           data: {
             subscribe: [
-              { key: 'profile_name', value: '' },
-              { key: 'profile_image', value: '' },
-              { key: 'profile_email', value: '' }
+              { key: 'profile_name', value: 'John Doe' },
+              { key: 'profile_image', value: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png' },
+              { key: 'profile_email', value: 'johns@accubits.com' }
             ],
             emit: [
               { key: 'profile_name', value: '' },
